@@ -15,8 +15,9 @@ from database import (accept_assignment, add_project, add_project_update,
                       update_availability, update_project_progress)
 
 # Load admin credentials from Streamlit secrets
-admin_users = st.secrets["ADMIN_USERS"]
-admin_passwords = st.secrets["ADMIN_PASSWORDS"]
+admin_users = st.secrets["general"]["ADMIN_USERS"].split(",")
+admin_passwords = st.secrets["general"]["ADMIN_PASSWORDS"].split(",")
+
 
 # Initialize DB
 init_db()
@@ -286,15 +287,23 @@ elif page == "👤 Client Login":
                 if new_password != confirm_password:
                     st.error("❌ Passwords do not match!")
                 else:
-                    result = register_client(new_email, new_name, new_password)
-                    if result:
-                        st.success("✅ Registration successful! You can now log in.")
-                    else:
+                    # Check if email already exists
+                    client = get_client_by_email(new_email)
+                    if client:
                         st.error(
                             "❌ Email already registered. Please use a different email or log in."
                         )
+                    else:
+                        result = register_client(new_email, new_name, new_password)
+                        if result:
+                            st.success(
+                                "✅ Registration successful! You can now log in."
+                            )
+                        else:
+                            st.error("❌ An error occurred during registration.")
             else:
                 st.error("⚠️ Please fill in all fields.")
+
 
 # Client Dashboard
 elif page == "📊 Client Dashboard":
