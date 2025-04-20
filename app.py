@@ -1,9 +1,9 @@
 import datetime
 import json
 import urllib.parse
+import secrets
 
 import streamlit as st
-
 from database import (accept_assignment, add_project, add_project_update,
                       assign_project, authenticate_client, delete_project,
                       get_assigned_projects, get_availability,
@@ -12,11 +12,11 @@ from database import (accept_assignment, add_project, add_project_update,
                       get_project_by_id, get_project_updates, get_projects,
                       get_unread_message_count, init_db, mark_messages_as_read,
                       register_client, reject_assignment, send_message,
-                      update_availability, update_project_progress)
+                      update_availability, update_project_progress , update_reset_token)
 
 # Load admin credentials from Streamlit secrets
-admin_users = st.secrets["general"]["ADMIN_USERS"].split(",")
-admin_passwords = st.secrets["general"]["ADMIN_PASSWORDS"].split(",")
+admin_users = st.secrets["ADMIN_USERS"].split(",")
+admin_passwords = st.secrets["ADMIN_PASSWORDS"].split(",")
 
 
 # Initialize DB
@@ -250,6 +250,7 @@ elif page == "ℹ️ About Us":
     """
     )
 
+
 # Client Login/Registration Page
 elif page == "👤 Client Login":
     st.title("👤 Client Portal")
@@ -272,6 +273,8 @@ elif page == "👤 Client Login":
                     st.error("❌ Invalid credentials. Please try again.")
             else:
                 st.error("⚠️ Please enter both email and password.")
+
+
 
     with tab2:
         st.subheader("Create a New Account")
